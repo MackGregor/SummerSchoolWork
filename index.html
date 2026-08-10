@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Summer Reading 2026 · Turner Kids</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@400;500;600&display=swap');
+  :root {
+    --cream: #FDF8F2; --ink: #1C1A16; --ink-light: #6B6660; --border: #E8E0D5;
+    --winnie: #2A9D8F; --winnie-dark: #1A7A6E; --winnie-light: #E0F5F3;
+    --sander: #E76F1A; --sander-dark: #C45A10; --sander-light: #FEF0E5;
+    --leona: #7B3FE4; --leona-dark: #5E28C2; --leona-light: #EFE6FD;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; }
+
+  /* ── HEADER ── */
+  .site-header {
+    padding: 28px 28px 0;
+    display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 0;
+  }
+  .header-left h1 {
+    font-family: 'Fraunces', serif; font-size: 28px; font-weight: 900; letter-spacing: -.5px; line-height: 1;
+  }
+  .header-left .subtitle { font-size: 13px; color: var(--ink-light); margin-top: 4px; margin-bottom: 16px; }
+  .kid-tabs { display: flex; gap: 0; }
+  .kid-tab {
+    padding: 10px 22px 12px; cursor: pointer; font-size: 14px; font-weight: 600;
+    color: var(--ink-light); border: none; background: none;
+    border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all .15s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .kid-tab:hover { color: var(--ink); }
+  .kid-tab.active[data-kid="winnie"] { color: var(--winnie-dark); border-bottom-color: var(--winnie); }
+  .kid-tab.active[data-kid="sander"] { color: var(--sander-dark); border-bottom-color: var(--sander); }
+  .kid-tab.active[data-kid="leona"]  { color: var(--leona-dark);  border-bottom-color: var(--leona);  }
+  .kid-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+  .w-dot{background:var(--winnie);} .s-dot{background:var(--sander);} .l-dot{background:var(--leona);}
+  .grade { font-size: 11px; color: var(--ink-light); font-weight: 400; }
+
+  /* ── MAIN ── */
+  .main { padding: 24px 28px 60px; max-width: 900px; }
+
+  /* ── STATS ── */
+  .stats-row { display: flex; gap: 12px; margin-bottom: 22px; flex-wrap: wrap; }
+  .stat-card { flex: 1; min-width: 110px; background: white; border: 1.5px solid var(--border); border-radius: 14px; padding: 14px 16px; }
+  .stat-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-light); margin-bottom: 4px; }
+  .stat-value { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 900; line-height: 1; }
+  .stat-sub { font-size: 11px; color: var(--ink-light); margin-top: 3px; }
+  .pbar { background: var(--border); border-radius: 99px; height: 5px; margin-top: 8px; overflow: hidden; }
+  .pbar-fill { height: 100%; border-radius: 99px; transition: width .6s ease; }
+
+  /* ── PROGRAMS ── */
+  .prog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; margin-bottom: 24px; }
+  .prog-card {
+    border: 1.5px solid var(--border); border-left-width: 4px; border-radius: 12px;
+    padding: 12px 13px; background: white;
+  }
+  .prog-name { font-size: 11px; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+  .prog-link { font-size: 10px; text-decoration: none; display: block; margin-bottom: 6px; }
+  .prog-link:hover { text-decoration: underline; }
+  .prog-count-row { display: flex; align-items: baseline; gap: 4px; }
+  .prog-count { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 900; }
+  .prog-count-label { font-size: 11px; color: var(--ink-light); }
+  .prog-goal { font-size: 10px; color: var(--ink-light); margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border); line-height: 1.5; }
+
+  /* ── SECTION HEADS ── */
+  .section-head {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em;
+    color: var(--ink-light); margin: 0 0 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-head::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* ── SCHOOL NOTE ── */
+  .school-note {
+    background: #FFFBEA; border: 1.5px solid #FFE58F; border-radius: 12px;
+    padding: 11px 15px; margin-bottom: 18px; font-size: 12px; color: #7D5A00; line-height: 1.65;
+  }
+
+  /* ── ADD BAR ── */
+  .add-bar { background: white; border: 1.5px solid var(--border); border-radius: 14px; padding: 15px 17px; margin-bottom: 16px; }
+  .add-bar-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--ink-light); margin-bottom: 10px; }
+  .add-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .add-row input, .add-row select {
+    font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 8px 10px;
+    border: 1.5px solid var(--border); border-radius: 9px; background: var(--cream); color: var(--ink); outline: none;
+    transition: border-color .15s;
+  }
+  .add-row input:focus, .add-row select:focus { border-color: #aaa; }
+  .f-title  { flex: 2; min-width: 130px; }
+  .f-author { flex: 1.5; min-width: 110px; }
+  .f-pages  { width: 78px; }
+  .f-prog   { flex: 1; min-width: 155px; }
+  .btn-add {
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+    padding: 8px 16px; border: none; border-radius: 9px; cursor: pointer; color: white; white-space: nowrap;
+    transition: opacity .15s;
+  }
+  .btn-add:hover { opacity: .85; }
+
+  /* ── BOOK CARDS ── */
+  .book-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
+  .book-card {
+    background: white; border: 1.5px solid var(--border); border-radius: 13px;
+    padding: 13px 16px; display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: start;
+  }
+  .book-card.req { border-left-width: 4px; }
+  .book-title { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 700; margin-bottom: 2px; line-height: 1.2; }
+  .book-author { font-size: 12px; color: var(--ink-light); margin-bottom: 8px; }
+  .book-tags { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+  .tag { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+  .tag-req { background: #FFF3CD; color: #856404; }
+  .pages-txt { font-size: 11px; color: var(--ink-light); }
+
+  .book-right { display: flex; flex-direction: column; align-items: flex-end; gap: 7px; min-width: 88px; }
+  .book-pct { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 900; }
+  .done-badge { font-size: 11px; font-weight: 700; padding: 4px 9px; background: #E8F5E9; color: #2E7D32; border-radius: 99px; }
+  .page-row { display: flex; align-items: center; gap: 5px; }
+  .page-row input {
+    width: 54px; font-family: 'DM Sans', sans-serif; font-size: 12px; padding: 4px 6px;
+    border: 1.5px solid var(--border); border-radius: 7px; background: var(--cream); text-align: center; outline: none;
+  }
+  .btn-save { font-size: 11px; font-weight: 600; padding: 4px 10px; border: none; border-radius: 7px; cursor: pointer; color: white; }
+  .btn-save:hover { opacity: .85; }
+  .btn-rm { font-size: 11px; color: var(--ink-light); background: none; border: none; cursor: pointer; padding: 0; }
+  .btn-rm:hover { color: #C62828; }
+  .set-row input {
+    width: 58px; font-size: 11px; padding: 3px 6px;
+    border: 1.5px solid var(--border); border-radius: 6px; background: var(--cream); text-align: center;
+    font-family: 'DM Sans', sans-serif; outline: none;
+  }
+  .btn-set { font-size: 10px; font-weight: 600; padding: 4px 9px; border: none; border-radius: 6px; cursor: pointer; color: white; }
+
+  .empty-state { text-align: center; padding: 32px 20px; color: var(--ink-light); font-size: 14px; }
+
+  /* ── TASK CARDS ── */
+  .task-card {
+    background: white; border: 1.5px solid var(--border); border-left-width: 4px;
+    border-radius: 13px; padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .ixl-today-note { font-size:11px; font-weight:600; margin-top:6px; }
+  .ixl-seg-bar { display:flex; gap:4px; margin-top:7px; align-items:flex-end; }
+  .ixl-seg-wrap { display:flex; flex-direction:column; align-items:center; gap:2px; flex:1; }
+  .ixl-seg-day { font-size:10px; font-weight:700; color:var(--ink-light); }
+  .ixl-seg-track { width:100%; height:8px; background:var(--border); border-radius:99px; overflow:hidden; }
+  .ixl-seg-fill { height:100%; border-radius:99px; transition:width .4s ease; }
+  .ixl-seg-mins { font-size:9px; color:var(--ink-light); }
+
+  .ixl-row { display: flex; align-items: center; gap: 6px; margin-top: 5px; }
+  .ixl-input { width: 58px; font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 4px 6px; border: 1.5px solid var(--border); border-radius: 7px; background: var(--cream); text-align: center; outline: none; }
+  .ixl-label { font-size: 12px; color: var(--ink-light); white-space: nowrap; }
+
+  .task-check-skip {
+    width: 20px; height: 20px; border-radius: 5px; border: 2px solid #ccc;
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    color: #bbb; font-weight: 700; font-size: 14px;
+  }
+  .task-check {
+    width: 20px; height: 20px; border-radius: 5px; border: 2px solid var(--border);
+    flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all .15s;
+  }
+  .task-check.checked { border-color: #2E7D32; background: #2E7D32; }
+  .task-check.checked::after { content: '✓'; color: white; font-size: 12px; font-weight: 700; }
+  .task-body { flex: 1; }
+  .task-title { font-size: 14px; font-weight: 600; }
+  .task-title.checked { text-decoration: line-through; color: var(--ink-light); }
+  .task-link { font-size: 11px; text-decoration: none; margin-top: 2px; display: inline-block; }
+  .task-link:hover { text-decoration: underline; }
+  .task-note { font-size: 11px; color: var(--ink-light); margin-top: 5px; line-height: 1.55; }
+  .task-tag { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 99px; background: #F3E8FF; color: #5E28C2; white-space: nowrap; align-self: flex-start; }
+</style>
+</head>
+<body>
+
+<div class="site-header">
+  <div class="header-left">
+    <h1>Summer Reading 2026</h1>
+    <p class="subtitle">St. Leo the Great · Summer 2026</p>
+  </div>
+  <div class="kid-tabs" id="kidTabs">
+    <button class="kid-tab active" data-kid="winnie">
+      <span class="kid-dot w-dot"></span>Winnie<span class="grade">6th</span>
+    </button>
+    <button class="kid-tab" data-kid="sander">
+      <span class="kid-dot s-dot"></span>Sander<span class="grade">4th</span>
+    </button>
+    <button class="kid-tab" data-kid="leona">
+      <span class="kid-dot l-dot"></span>Leona<span class="grade">3rd</span>
+    </button>
+  </div>
+</div>
+
+<div class="main" id="mainPanel"></div>
+
+<script>
+const KIDS = {
+  winnie: { name:'Winnie', color:'#2A9D8F', dark:'#1A7A6E', light:'#E0F5F3' },
+  sander: { name:'Sander', color:'#E76F1A', dark:'#C45A10', light:'#FEF0E5' },
+  leona:  { name:'Leona',  color:'#7B3FE4', dark:'#5E28C2', light:'#EFE6FD' },
+};
+const PROGRAMS = {
+  school:    { label:'School Required',            emoji:'📚', color:'#856404', bg:'#FFF3CD', url:'https://saintleothegreatschool.org/supplies-summer-reading',                                              urlLabel:'St. Leo reading lists',      goal:'' },
+  fairfax:   { label:'Fairfax Library',            emoji:'🏛️', color:'#1565C0', bg:'#E3F2FD', url:'https://fairfaxcounty.beanstack.org/reader365',                                                          urlLabel:'Register on Beanstack',       goal:'✅ Completed — Nationals tickets earned!' },
+  manhattan: { label:'Manhattan Library',          emoji:'🌾', color:'#558B2F', bg:'#F1F8E9', url:'https://mhklibrary.org/reading-challenges/',                                                             urlLabel:'mhklibrary.org',              goal:'✅ Completed 7/22!' },
+  bn:        { label:'Barnes & Noble',             emoji:'📖', color:'#4527A0', bg:'#EDE7F6', url:'https://dispatch.barnesandnoble.com/content/dam/ccr/pdf/2025/2025-BN-Kids-Summer-Reading-Journal.pdf',   urlLabel:'Download journal (PDF)',       goal:'✅ Completed!' },
+  bookit:    { label:'Book It! Summer of Stories', emoji:'🍕', color:'#C8001E', bg:'#FDECEA', url:'https://www.bookitprogram.com/',                                                                          urlLabel:'bookitprogram.com',           goal:'Meet monthly reading goal → free Personal Pan Pizza (Jun–Aug)' },
+  cec:       { label:'Chuck E. Cheese',            emoji:'🎮', color:'#0D47A1', bg:'#E8EAF6', url:'https://www.chuckecheese.com/activities-and-downloads/reading-rewards-calendar-english/',                urlLabel:'Download calendar',           goal:'Read daily 2 weeks → 10 free play points' },
+  panda:     { label:'Panda Express',              emoji:'🐼', color:'#E65100', bg:'#FFF3E0', url:'https://community.pandaexpress.com/read-with-me',                                                        urlLabel:'community.pandaexpress.com',  goal:'✅ Completed 6/11 — free meals redeemed!' },
+  nationals: { label:'Nationals All-Star',         emoji:'⚾', color:'#B71C1C', bg:'#FFEBEE', url:'https://www.mlb.com/nationals/community/summer-reading',                                                 urlLabel:'nationals.com/summerreading', goal:'✅ Completed — 2 free Upper Gallery tickets per kid!' },
+  free:      { label:'Free Reading',               emoji:'✨', color:'#5E28C2', bg:'#F3F0F9', url:'',                                                                                                        urlLabel:'',                            goal:'' },
+};
+
+const DISPLAY_PROGS = ['fairfax','manhattan','bn','bookit','cec','panda','nationals'];
+
+const SCHOOL_NOTES = {
+  winnie: '<strong>6th Grade (Mrs. Schouviller &amp; Ms. Hudson):</strong> Read <em>City Spies</em> and <em>Tuck Everlasting</em>. Annotate both in a composition notebook as you read — characters (appearance & personality), setting, key plot events, theme. Both books may use the same notebook. Collected 1st day back and graded in Reading & English class. Also: 75 min IXL per week all summer.',
+  sander: '<strong>4th Grade:</strong> Read <em>Frindle</em> (activities 1st week back) + <em>James and the Giant Peach</em> + <em>Charlotte\'s Web</em>. Complete a Story Map + Reading Log for all 3 books. 📋 <strong>Still needed: fill out the Reading Log with all books read this summer to turn in this fall.</strong><br><br><strong>IXL (per Ms. Reyes):</strong> 20–40 min/week total, split between Math and Reading/Language Arts. Log in through the Saint Leo school account. Start with MAP Growth targeted skills, then teacher-recommended skills.',
+  leona:  '<strong>3rd Grade (Ms. Reyes):</strong> Read <em>Fantastic Mr. Fox</em> + one Cam Jansen mystery of choice. Complete a book report for each. Return both reports + summer reading log on the first day back. ✅ Both books read. ✅ Both reports done. 📋 <strong>Still needed: fill out the Summer Reading Log with all books read this summer.</strong>',
+};
+
+const SEED = {
+  winnie: [
+    { id:'r1',  title:'City Spies',       author:'James Ponti',     program:'school', required:true, totalPages:400, pagesRead:400 },
+    { id:'r1p', task:true, title:'💵 Pay Winnie $1 — City Spies (book)', taskTag:'💵 Payment', required:true, done:true },
+    { id:'r1a', task:true, title:'Annotations — City Spies', taskTag:'📓 Annotations', required:true, done:true,
+      taskNote:'In your composition notebook: note characters (physical appearance & personality), setting, important plot events, and your guess at the theme. Notebook collected 1st day — neat counts, this is your first Reading & English grade.' },
+    { id:'r1ap', task:true, title:'💵 Pay Winnie $1 — City Spies (annotations)', taskTag:'💵 Payment', required:true, done:true },
+    { id:'r2',  title:'Tuck Everlasting', author:'Natalie Babbitt', program:'school', required:true, totalPages:144, pagesRead:144 },
+    { id:'r2p', task:true, title:'💵 Pay Winnie $1 — Tuck Everlasting (book)', taskTag:'💵 Payment', required:true, done:true },
+    { id:'r2a', task:true, title:'Annotations — Tuck Everlasting', taskTag:'📓 Annotations', required:true, done:true,
+      taskNote:'In your composition notebook: note characters (physical appearance & personality), setting, important plot events, and your guess at the theme. Notebook collected 1st day — neat counts, this is your first Reading & English grade.' },
+    { id:'r2ap', task:true, title:'💵 Pay Winnie $1 — Tuck Everlasting (annotations)', taskTag:'💵 Payment', required:true, done:true },
+    { id:'r2bp', task:true, title:'💵 Pay Winnie $5 — Summer reading completion bonus!', taskTag:'💵 Payment', required:true, done:true },
+    { id:'ixl0', task:true, ixl:true, title:'IXL — Jun 12 (Fri)',   taskTag:'💻 IXL', required:true, ixlMins:15,  skipped:false },
+    { id:'ixl1', task:true, ixl:true, title:'IXL — Jun 15–19',    taskTag:'💻 IXL', required:true, ixlMins:75, skipped:false },
+    { id:'ixl2', task:true, ixl:true, title:'IXL — Jun 22–26',    taskTag:'💻 IXL', required:true, ixlMins:75, skipped:false },
+    { id:'ixl3', task:true, ixl:true, title:'IXL — Jun 29–Jul 3', taskTag:'💻 IXL', required:true, ixlMins:75, skipped:false },
+    { id:'ixl4', task:true, ixl:true, title:'IXL — Jul 6–10',     taskTag:'💻 IXL', required:true, ixlMins:75, skipped:false },
+    { id:'ixl5', task:true, ixl:true, title:'IXL — Jul 13–17',    taskTag:'💻 IXL', required:true, ixlMins:75, skipped:false },
+    { id:'ixl6', task:true, ixl:true, title:'IXL — Jul 20–24',    taskTag:'💻 IXL', required:true, ixlMins:75, skipped:false },
+    { id:'ixl7', task:true, ixl:true, title:'IXL — Jul 27–31',    taskTag:'💻 IXL', required:true, ixlMins:75, skipped:false },
+    { id:'ixl8', task:true, ixl:true, title:'IXL — Aug 3–7',      taskTag:'💻 IXL', required:true, ixlMins:75,  skipped:false },
+    { id:'ixl9', task:true, ixl:true, title:'IXL — Aug 10–14',    taskTag:'💻 IXL', required:true, ixlMins:19,  skipped:false },
+    { id:'ixl10', task:true, ixl:true, title:'IXL — Aug 17–19',   taskTag:'💻 IXL', required:true, ixlMins:0,  skipped:false },
+    { id:'ixlbonus', task:true, title:'💵 Pay Winnie $5 — IXL completion bonus!', taskTag:'💵 Payment', required:true, done:false },
+    { id:'bit1', task:true, title:'Book It! — June',    taskUrl:'https://www.bookitprogram.com/', taskLabel:'bookitprogram.com', taskTag:'🍕 Book It!', required:false, done:true },
+    { id:'bit2', task:true, title:'Book It! — July',    taskUrl:'https://www.bookitprogram.com/', taskLabel:'bookitprogram.com', taskTag:'🍕 Book It!', required:false, done:true },
+    { id:'bit3', task:true, title:'Book It! — August',  taskUrl:'https://www.bookitprogram.com/', taskLabel:'bookitprogram.com', taskTag:'🍕 Book It!', required:false, done:false },
+  ],
+  sander: [
+    { id:'r1',  title:'Frindle',                       author:'Andrew Clements', program:'school', required:true, totalPages:105, pagesRead:105 },
+    { id:'r1p', task:true, title:'💵 Pay Sander $1 — Frindle (book)',              taskTag:'💵 Payment', required:true, done:true },
+    { id:'r1m', task:true, title:'Story Map — Frindle',       taskUrl:'https://drive.google.com/file/d/1Ger5D8lmdJ-Itsq9j2Rlrq6xUbv4Xxnk/view', taskLabel:'Print Story Map form (PDF)', taskTag:'🗺️ Story Map', required:true, done:true },
+    { id:'r1mp', task:true, title:'💵 Pay Sander $1 — Frindle (story map)',        taskTag:'💵 Payment', required:true, done:true },
+    { id:'r3',  title:"Charlotte's Web",                      author:'E.B. White',      program:'school', required:true, totalPages:184, pagesRead:184 },
+    { id:'r3p', task:true, title:"💵 Pay Sander $1 — Charlotte's Web (book)",      taskTag:'💵 Payment', required:true, done:true },
+    { id:'r3m', task:true, title:"Story Map — Charlotte's Web", taskUrl:'https://drive.google.com/file/d/1Ger5D8lmdJ-Itsq9j2Rlrq6xUbv4Xxnk/view', taskLabel:'Print Story Map form (PDF)', taskTag:'🗺️ Story Map', required:true, done:true },
+    { id:'r3mp', task:true, title:"💵 Pay Sander $1 — Charlotte's Web (story map)", taskTag:'💵 Payment', required:true, done:true },
+    { id:'r2',  title:'James and the Giant Peach',             author:'Roald Dahl',      program:'school', required:true, totalPages:144, pagesRead:144 },
+    { id:'r2p', task:true, title:'💵 Pay Sander $1 — James and the Giant Peach (book)', taskTag:'💵 Payment', required:true, done:true },
+    { id:'r2m', task:true, title:'Story Map — James and the Giant Peach', taskUrl:'https://drive.google.com/file/d/1Ger5D8lmdJ-Itsq9j2Rlrq6xUbv4Xxnk/view', taskLabel:'Print Story Map form (PDF)', taskTag:'🗺️ Story Map', required:true, done:true },
+    { id:'r2mp', task:true, title:'💵 Pay Sander $1 — James and the Giant Peach (story map)', taskTag:'💵 Payment', required:true, done:true },
+    { id:'rlog', task:true, title:'Reading Log — all books this summer', taskUrl:'https://drive.google.com/file/d/1Z1MrucbccnRvnWsv9JiwGunNzUAA4lEc/view', taskLabel:'Print Reading Log (PDF)', taskTag:'📋 Reading Log', required:true, done:true },
+    { id:'rlogp', task:true, title:'💵 Pay Sander $1 — Summer reading log completion bonus', taskTag:'💵 Payment', required:true, done:true },
+    { id:'rbonus', task:true, title:'💵 Pay Sander $5 — Summer reading completion bonus!', taskTag:'💵 Payment', required:true, done:true },
+    { id:'ixl0', task:true, ixl:true, title:'IXL — Jun 12 (Fri)',   taskTag:'💻 IXL', required:true, ixlMins:15,  skipped:false },
+    { id:'ixl1', task:true, ixl:true, title:'IXL — Jun 15–19',    taskTag:'💻 IXL', required:true, ixlMins:75, skipped:false },
+    { id:'ixl2', task:true, ixl:true, title:'IXL — Jun 22–26',    taskTag:'💻 IXL', required:true, ixlMins:75, skipped:false },
+    { id:'ixl3', task:true, ixl:true, title:'IXL — Jun 29–Jul 3', taskTag:'💻 IXL', required:true, ixlMins:75, skipped:false },
+    { id:'ixl4', task:true, ixl:true, title:'IXL — Jul 6–10',     taskTag:'💻 IXL', required:true, ixlMins:75, skipped:false },
+    { id:'ixl5', task:true, ixl:true, title:'IXL — Jul 13–17',    taskTag:'💻 IXL', required:true, ixlMins:75, skipped:false },
+    { id:'ixl6', task:true, ixl:true, title:'IXL — Jul 20–24',    taskTag:'💻 IXL', required:true, ixlMins:75, skipped:false },
+    { id:'ixl7', task:true, ixl:true, title:'IXL — Jul 27–31',    taskTag:'💻 IXL', required:true, ixlMins:75, skipped:false },
+    { id:'ixl8', task:true, ixl:true, title:'IXL — Aug 3–7',      taskTag:'💻 IXL', required:true, ixlMins:75,  skipped:false },
+    { id:'ixl9', task:true, ixl:true, title:'IXL — Aug 10–14',    taskTag:'💻 IXL', required:true, ixlMins:64,  skipped:false },
+    { id:'ixl10', task:true, ixl:true, title:'IXL — Aug 17–19',   taskTag:'💻 IXL', required:true, ixlMins:0,  skipped:false },
+    { id:'ixlbonus', task:true, title:'💵 Pay Sander $5 — IXL completion bonus!', taskTag:'💵 Payment', required:true, done:false },
+    { id:'bit1', task:true, title:'Book It! — June',    taskUrl:'https://www.bookitprogram.com/', taskLabel:'bookitprogram.com', taskTag:'🍕 Book It!', required:false, done:true },
+    { id:'bit2', task:true, title:'Book It! — July',    taskUrl:'https://www.bookitprogram.com/', taskLabel:'bookitprogram.com', taskTag:'🍕 Book It!', required:false, done:true },
+    { id:'bit3', task:true, title:'Book It! — August',  taskUrl:'https://www.bookitprogram.com/', taskLabel:'bookitprogram.com', taskTag:'🍕 Book It!', required:false, done:false },
+  ],
+  leona: [
+    { id:'r1',  title:'Fantastic Mr. Fox',   author:'Roald Dahl',    program:'school', required:true, totalPages:96, pagesRead:96 },
+    { id:'r1p', task:true, title:'💵 Pay Leona $1 — Fantastic Mr. Fox (book)',         taskTag:'💵 Payment', required:true, done:true },
+    { id:'r1t', task:true, title:'Book report — Fantastic Mr. Fox', taskUrl:'https://drive.google.com/file/d/1SXoVicrwfS1usf7vWUkLMz6QiS3FBoln/view', taskLabel:'Print Grade 3 Book Report form (PDF)', taskTag:'📝 Report', required:true, done:true },
+    { id:'r1tp', task:true, title:'💵 Pay Leona $1 — Fantastic Mr. Fox (book report)', taskTag:'💵 Payment', required:true, done:true },
+    { id:'r2',  title:'Cam Jansen and the Mystery of the U.F.O.', author:'David A. Adler', program:'school', required:true, totalPages:64, pagesRead:64 },
+    { id:'r2p', task:true, title:'💵 Pay Leona $1 — Cam Jansen U.F.O. (book)',         taskTag:'💵 Payment', required:true, done:true },
+    { id:'r2t', task:true, title:'Book report — Cam Jansen and the Mystery of the U.F.O.', taskUrl:'https://drive.google.com/file/d/1SXoVicrwfS1usf7vWUkLMz6QiS3FBoln/view', taskLabel:'Print Grade 3 Book Report form (PDF)', taskTag:'📝 Report', required:true, done:true },
+    { id:'r2tp', task:true, title:'💵 Pay Leona $1 — Cam Jansen U.F.O. (book report)', taskTag:'💵 Payment', required:true, done:true },
+    { id:'rbonus', task:true, title:'💵 Pay Leona $5 — Summer reading completion bonus!', taskTag:'💵 Payment', required:true, done:true },
+    { id:'rlog', task:true, title:'Summer Reading Log — all additional books', taskUrl:'https://drive.google.com/file/d/1y5E1LpscEAw6YY_LVuwwCwNFofv8xaJO/view', taskLabel:'Print Reading Log (PDF)', taskTag:'📋 Reading Log', required:true, done:true },
+    { id:'rlogp', task:true, title:'💵 Pay Leona $1 — Summer reading log completion bonus', taskTag:'💵 Payment', required:true, done:true },
+    { id:'packet', task:true, title:'Complete optional summer packet (reading + math)', taskTag:'📦 Packet', required:true, done:false, taskNote:'Bring completed packet to Ms. Tomaselli at start of school year for a prize!' },
+    { id:'packetp', task:true, title:'💵 Pay Leona $1 — Summer packet completion bonus', taskTag:'💵 Payment', required:true, done:false },
+    { id:'ixl0', task:true, ixl:true, title:'IXL — Jun 12 (Fri)',   taskTag:'💻 IXL', required:true, ixlMins:15,  skipped:false },
+    { id:'ixl1', task:true, ixl:true, title:'IXL — Jun 15–19',    taskTag:'💻 IXL', required:true, ixlMins:75, skipped:false },
+    { id:'ixl2', task:true, ixl:true, title:'IXL — Jun 22–26',    taskTag:'💻 IXL', required:true, ixlMins:75, skipped:false },
+    { id:'ixl3', task:true, ixl:true, title:'IXL — Jun 29–Jul 3', taskTag:'💻 IXL', required:true, ixlMins:75, skipped:false },
+    { id:'ixl4', task:true, ixl:true, title:'IXL — Jul 6–10',     taskTag:'💻 IXL', required:true, ixlMins:75, skipped:false },
+    { id:'ixl5', task:true, ixl:true, title:'IXL — Jul 13–17',    taskTag:'💻 IXL', required:true, ixlMins:75, skipped:false },
+    { id:'ixl6', task:true, ixl:true, title:'IXL — Jul 20–24',    taskTag:'💻 IXL', required:true, ixlMins:75, skipped:false },
+    { id:'ixl7', task:true, ixl:true, title:'IXL — Jul 27–31',    taskTag:'💻 IXL', required:true, ixlMins:75, skipped:false },
+    { id:'ixl8', task:true, ixl:true, title:'IXL — Aug 3–7',      taskTag:'💻 IXL', required:true, ixlMins:75,  skipped:false },
+    { id:'ixl9', task:true, ixl:true, title:'IXL — Aug 10–14',    taskTag:'💻 IXL', required:true, ixlMins:21,  skipped:false },
+    { id:'ixl10', task:true, ixl:true, title:'IXL — Aug 17–19',   taskTag:'💻 IXL', required:true, ixlMins:0,  skipped:false },
+    { id:'ixlbonus', task:true, title:'💵 Pay Leona $5 — IXL completion bonus!', taskTag:'💵 Payment', required:true, done:false },
+    { id:'bit1', task:true, title:'Book It! — June',    taskUrl:'https://www.bookitprogram.com/', taskLabel:'bookitprogram.com', taskTag:'🍕 Book It!', required:false, done:true },
+    { id:'bit2', task:true, title:'Book It! — July',    taskUrl:'https://www.bookitprogram.com/', taskLabel:'bookitprogram.com', taskTag:'🍕 Book It!', required:false, done:true },
+    { id:'bit3', task:true, title:'Book It! — August',  taskUrl:'https://www.bookitprogram.com/', taskLabel:'bookitprogram.com', taskTag:'🍕 Book It!', required:false, done:false },
+  ],
+};
+
+let state = { active:'winnie', books:{ winnie:[], sander:[], leona:[] } };
+let uid = Date.now();
+
+try {
+  const saved = JSON.parse(localStorage.getItem('turnerReading2026') || '{}');
+  if (saved.books) state.books = saved.books;
+  ['winnie','sander','leona'].forEach(kid => {
+    if (!state.books[kid]) state.books[kid] = [];
+    if (state.books[kid].length === 0) {
+      state.books[kid] = SEED[kid].map(b => ({...b}));
+    } else {
+      SEED[kid].forEach(req => {
+        if (!state.books[kid].find(b => b.id === req.id))
+          state.books[kid].unshift({...req});
+      });
+    }
+  });
+} catch(e) {
+  ['winnie','sander','leona'].forEach(kid => { state.books[kid] = SEED[kid].map(b => ({...b})); });
+}
+
+function persist() {
+  try { localStorage.setItem('turnerReading2026', JSON.stringify({books:state.books})); } catch(e) {}
+}
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function render() {
+  const kid   = state.active;
+  const k     = KIDS[kid];
+  const books = state.books[kid];
+  const req   = books.filter(b => b.required);
+  const extra = books.filter(b => !b.required);
+
+  const reqBooks  = req.filter(b => !b.task);
+  const reqTasks  = req.filter(b => b.task);
+  const reqDone   = reqBooks.filter(b => b.totalPages > 0 && b.pagesRead >= b.totalPages).length;
+  const tasksDone = reqTasks.filter(b => b.done).length;
+  const allDone   = books.filter(b => !b.task && b.totalPages > 0 && b.pagesRead >= b.totalPages).length;
+  const totalPg   = books.filter(b => !b.task).reduce((s,b) => s + (b.totalPages||0), 0);
+  const readPg    = books.filter(b => !b.task).reduce((s,b) => s + Math.min(b.pagesRead||0, b.totalPages||0), 0);
+  const pct       = totalPg > 0 ? Math.round(readPg / totalPg * 100) : 0;
+  const ixlWeeks     = books.filter(b => b.ixl && !b.skipped);
+  const ixlTotal     = ixlWeeks.length;
+  const ixlGoal      = bk => bk.id==='ixl0' ? 15 : bk.id==='ixl10' ? 45 : 75;
+  const ixlMinsDone  = ixlWeeks.reduce((s,b) => s + Math.min(b.ixlMins||0, ixlGoal(b)), 0);
+  const ixlMinsTotal = ixlWeeks.reduce((s,b) => s + ixlGoal(b), 0);
+  const ixlDone      = ixlWeeks.filter(b => (b.ixlMins||0) >= ixlGoal(b)).length;
+  const ixlPct       = ixlMinsTotal > 0 ? Math.round(ixlMinsDone / ixlMinsTotal * 100) : 0;
+
+  // Tally earned dollars from completed payment tasks
+  const payTasks    = books.filter(b => b.task && b.taskTag === '💵 Payment');
+  const earnedDollars = payTasks.filter(b => b.done).reduce((s,b) => {
+    const m = b.title.match(/\$(\d+)/);
+    return s + (m ? parseInt(m[1]) : 0);
+  }, 0);
+  const totalDollars = payTasks.reduce((s,b) => {
+    const m = b.title.match(/\$(\d+)/);
+    return s + (m ? parseInt(m[1]) : 0);
+  }, 0);
+
+  document.getElementById('mainPanel').innerHTML = `
+    <div style="margin-bottom:14px">
+      <a href="https://www.ixl.com/signin/stleo" target="_blank" style="display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:${k.color};text-decoration:none;padding:7px 14px;border:1.5px solid ${k.color};border-radius:99px;background:white;">
+        💻 Log in to IXL to check ${k.name}'s minutes &nearr;
+      </a>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Required Books</div>
+        <div class="stat-value" style="color:${k.color}">${reqDone}<span style="font-size:16px;font-weight:500;color:var(--ink-light)">/${reqBooks.length}</span></div>
+        <div class="stat-sub">books done</div>
+      </div>
+      <div class="stat-card" style="flex:2">
+        <div class="stat-label">Pages Read</div>
+        <div class="stat-value" style="color:${k.color}">${pct}%</div>
+        <div class="stat-sub">${readPg.toLocaleString()} of ${totalPg.toLocaleString()} pages</div>
+        <div class="pbar"><div class="pbar-fill" style="width:${pct}%;background:${k.color}"></div></div>
+      </div>
+      ${totalDollars > 0 ? `
+      <div class="stat-card">
+        <div class="stat-label">💵 Earned</div>
+        <div class="stat-value" style="color:#2E7D32">$${earnedDollars}</div>
+        <div class="stat-sub">of $${totalDollars} possible</div>
+      </div>` : ''}
+    </div>
+    ${ixlTotal > 0 ? (
+    '<div class="stats-row">'
+    + '<div class="stat-card">'
+    + '<div class="stat-label">💻 IXL Time</div>'
+    + '<div class="stat-value" style="color:' + k.color + '">' + Math.floor(ixlMinsDone/60) + '<span style="font-size:14px;font-weight:500">h</span> ' + (ixlMinsDone%60) + '<span style="font-size:14px;font-weight:500">m</span></div>'
+    + '<div class="stat-sub">of ' + Math.floor(ixlMinsTotal/60) + 'h ' + (ixlMinsTotal%60) + 'm required</div>'
+    + '</div>'
+    + '<div class="stat-card" style="flex:2">'
+    + '<div class="stat-label">💻 IXL Progress</div>'
+    + '<div class="stat-value" style="color:' + k.color + '">' + ixlPct + '%</div>'
+    + '<div class="stat-sub">' + ixlMinsDone + ' of ' + ixlMinsTotal + ' min completed</div>'
+    + '<div class="pbar"><div class="pbar-fill" style="width:' + ixlPct + '%;background:' + k.color + '"></div></div>'
+    + '</div>'
+    + '</div>'
+    ) : ''}
+
+    <div class="section-head">Reading Programs</div>
+    <div class="prog-grid">
+      ${DISPLAY_PROGS.map(key => {
+        const p  = PROGRAMS[key];
+        return '<div class="prog-card" style="border-left-color:' + p.color + '">'
+          + '<div class="prog-name" style="color:' + p.color + '">' + p.emoji + ' ' + p.label + '</div>'
+          + (p.url ? '<a class="prog-link" href="' + p.url + '" target="_blank" style="color:' + p.color + '">&nearr; ' + p.urlLabel + '</a>' : '')
+          + (p.goal && p.goal.startsWith('✅')
+            ? '<div class="prog-goal" style="color:#2E7D32;font-weight:700">' + p.goal + '</div>'
+            : '<div class="prog-goal" style="color:#888">⏳ In progress</div>'
+              + (p.goal ? '<div class="prog-goal">' + p.goal + '</div>' : ''))
+          + '</div>';
+      }).join('')}
+    </div>
+
+    <div class="school-note">${SCHOOL_NOTES[kid]}</div>
+
+    <div class="section-head">Required Books &amp; Tasks</div>
+    <div class="book-list">
+      ${req.map(b => b.ixl ? ixlCard(b, books.indexOf(b), k) : b.task ? taskCard(b, books.indexOf(b), k) : bookCard(b, books.indexOf(b), k)).join('')}
+    </div>
+
+    <div class="section-head">Additional Reading</div>
+    <div class="add-bar">
+      <div class="add-bar-label">Add a Book</div>
+      <div class="add-row">
+        <input class="f-title"  placeholder="Title"  id="iTitle">
+        <input class="f-author" placeholder="Author" id="iAuthor">
+        <input class="f-pages"  placeholder="Pages"  type="number" min="1" id="iPages">
+        <select class="f-prog" id="iProg">
+          ${Object.entries(PROGRAMS).map(([key,p]) => '<option value="' + key + '">' + p.emoji + ' ' + p.label + '</option>').join('')}
+        </select>
+        <button class="btn-add" style="background:${k.color}" onclick="addBook()">+ Add</button>
+      </div>
+    </div>
+    <div class="book-list">
+      ${extra.length === 0
+        ? '<div class="empty-state">No extra books yet — add one above!</div>'
+        : extra.map(b => b.task ? taskCard(b, books.indexOf(b), k) : bookCard(b, books.indexOf(b), k)).join('')}
+    </div>
+  `;
+}
+
+function bookCard(b, idx, k) {
+  const p     = PROGRAMS[b.program] || PROGRAMS.free;
+  const total = b.totalPages || 0;
+  const read  = Math.min(b.pagesRead || 0, total);
+  const pct   = total > 0 ? Math.round(read / total * 100) : 0;
+  const done  = total > 0 && read >= total;
+  return '<div class="book-card' + (b.required?' req':'') + '" style="border-left-color:' + (b.required?k.color:'var(--border)') + '">'
+    + '<div>'
+    + '<div class="book-title">' + esc(b.title) + '</div>'
+    + (b.author ? '<div class="book-author">' + esc(b.author) + '</div>' : '')
+    + '<div class="book-tags">'
+    + (b.required ? '<span class="tag tag-req">&#11088; Required</span>' : '')
+    + '<span class="tag" style="background:' + p.bg + ';color:' + p.color + '">' + p.emoji + ' ' + p.label + '</span>'
+    + (total > 0 ? '<span class="pages-txt">' + read.toLocaleString() + ' / ' + total.toLocaleString() + ' pages</span>' : '<span class="pages-txt" style="color:#ccc">no page count set</span>')
+    + '</div>'
+    + (total > 0 ? '<div class="pbar" style="margin-top:6px"><div class="pbar-fill" style="width:' + pct + '%;background:' + k.color + '"></div></div>' : '')
+    + '</div>'
+    + '<div class="book-right">'
+    + (done
+      ? '<span class="done-badge">&#10003; Done</span>'
+      : '<div class="book-pct" style="color:' + k.color + '">' + (total>0?pct+'%':'&ndash;') + '</div>')
+    + (total > 0
+      ? '<div class="page-row"><input type="number" min="0" max="' + total + '" value="' + read + '" id="pg_' + idx + '"><button class="btn-save" style="background:' + k.color + '" onclick="savePg(' + idx + ',' + total + ')">Save</button></div>'
+      : '<div class="page-row set-row"><input type="number" min="1" placeholder="# pg" id="tp_' + idx + '"><button class="btn-set" style="background:' + k.color + '" onclick="setTotal(' + idx + ')">Set</button></div>')
+    + (!b.required ? '<button class="btn-rm" onclick="rmBook(' + idx + ')">&#10005; remove</button>' : '')
+    + '</div></div>';
+}
+
+function taskCard(b, idx, k) {
+  const checked = b.done ? 'checked' : '';
+  const skipped = b.skipped;
+  return '<div class="task-card" style="border-left-color:' + (skipped ? '#bbb' : k.color) + (skipped ? ';opacity:0.7' : '') + '">'
+    + (skipped
+      ? '<div class="task-check-skip">–</div>'
+      : '<div class="task-check ' + checked + '" onclick="toggleTask(' + idx + ')"></div>')
+    + '<div class="task-body">'
+    + '<div class="task-title" style="' + (skipped ? 'text-decoration:line-through;color:var(--ink-light)' : '') + '">' + esc(b.title) + '</div>'
+    + (b.taskUrl ? '<a class="task-link" href="' + b.taskUrl + '" target="_blank" style="color:' + k.color + '">&nearr; ' + (b.taskLabel || 'Open PDF') + '</a>' : '')
+    + (b.taskNote ? '<div class="task-note">' + esc(b.taskNote) + '</div>' : '')
+    + '</div>'
+    + (b.done ? '<span class="done-badge">&#10003; Done</span>' : '<span class="task-tag">' + (b.taskTag || '📝 Task') + '</span>')
+    + '</div>';
+}
+
+function ixlCard(b, idx, k) {
+  // ixl0 = Friday only (15 min); ixl10 = Mon-Wed only (45 min); all others = 75 min
+  const IXL_GOAL = b.id === 'ixl0' ? 15 : b.id === 'ixl10' ? 45 : 75;
+  const mins    = b.ixlMins || 0;
+  const done    = mins >= IXL_GOAL;
+  const skipped = b.skipped;
+
+  // Determine if this is the current week and which day we're on
+  const TODAY_WEEK_ID = 'ixl9'; // Aug 10-14
+  const TODAY_DAY     = 1;      // 0=Mon, 1=Tue, 2=Wed, 3=Thu, 4=Fri
+  const isCurrentWeek = b.id === TODAY_WEEK_ID;
+
+  // Calculate total expected minutes through today across ALL weeks
+  const allIxlWeeks = state.books[state.active].filter(bk => bk.ixl && !bk.skipped);
+  const currentWeekIdx = allIxlWeeks.findIndex(bk => bk.id === TODAY_WEEK_ID);
+  const ixlGoalFn    = bk => bk.id==='ixl0' ? 15 : bk.id==='ixl10' ? 45 : 75;
+  const totalExpected = allIxlWeeks.slice(0, currentWeekIdx).reduce((s,bk) => s + ixlGoalFn(bk), 0) + (TODAY_DAY + 1) * 15;
+  const totalLogged   = allIxlWeeks.reduce((s, bk, i) => {
+    const goal = ixlGoalFn(bk);
+    if (i < currentWeekIdx) return s + Math.min(bk.ixlMins || 0, goal);
+    if (i === currentWeekIdx) return s + Math.min(bk.ixlMins || 0, (TODAY_DAY + 1) * 15);
+    return s;
+  }, 0);
+  const totalBehind   = Math.max(0, totalExpected - totalLogged);
+
+  // Build day segments
+  function segBar() {
+    const days = b.id === 'ixl0' ? 1 : b.id === 'ixl10' ? 3 : 5;
+    const dayLabels = ['M','T','W','T','F'];
+    const startDay  = b.id === 'ixl0' ? 4 : 0; // ixl0 is Friday only
+    let html = '<div class="ixl-seg-bar">';
+    for (let d = 0; d < days; d++) {
+      const dayStart  = d * 15;
+      const dayMins   = Math.min(Math.max(mins - dayStart, 0), 15);
+      const dayPct    = Math.round(dayMins / 15 * 100);
+      const dayLabel  = dayLabels[startDay + d];
+      const isToday   = isCurrentWeek && (startDay + d) === TODAY_DAY;
+      const todayStyle = isToday ? 'outline:2.5px solid ' + k.color + ';outline-offset:2px;border-radius:4px;' : '';
+      html += '<div class="ixl-seg-wrap" style="' + todayStyle + '">'
+        + '<div class="ixl-seg-day" style="' + (isToday ? 'color:' + k.color + ';font-size:11px;' : '') + '">' + dayLabel + (isToday ? ' ◀' : '') + '</div>'
+        + '<div class="ixl-seg-track"><div class="ixl-seg-fill" style="width:' + dayPct + '%;background:' + k.color + '"></div></div>'
+        + '<div class="ixl-seg-mins">' + dayMins + '</div>'
+        + '</div>';
+    }
+    html += '</div>';
+    if (isCurrentWeek) {
+      const behind = totalBehind;
+      html += '<div class="ixl-today-note" style="color:' + k.color + '">'
+        + (behind > 0 ? '⚠️ ' + behind + ' min behind as of today (Tue Aug 11)' : '✅ Caught up through today (Tue Aug 11)')
+        + '</div>';
+    }
+    return html;
+  }
+
+  return '<div class="task-card" style="border-left-color:' + (skipped ? '#bbb' : k.color) + (skipped ? ';opacity:0.7' : '') + (isCurrentWeek ? ';box-shadow:0 0 0 2px ' + k.color + '40;' : '') + '">'
+    + (skipped
+      ? '<div class="task-check-skip">–</div>'
+      : (done
+          ? '<div class="task-check checked"></div>'
+          : '<div class="task-check"></div>'))
+    + '<div class="task-body">'
+    + '<div class="task-title" style="' + (skipped ? 'text-decoration:line-through;color:var(--ink-light)' : '') + '">'
+    + esc(b.title)
+    + (isCurrentWeek ? ' <span style="font-size:10px;font-weight:700;padding:1px 6px;border-radius:99px;background:' + k.color + ';color:white;vertical-align:middle;margin-left:4px">THIS WEEK</span>' : '')
+    + '</div>'
+    + (skipped
+      ? (b.taskNote ? '<div class="task-note">' + esc(b.taskNote) + '</div>' : '')
+      : '<div class="ixl-row">'
+        + '<input type="number" min="0" max="999" value="' + mins + '" id="ixl_' + idx + '" class="ixl-input" placeholder="0">'
+        + '<span class="ixl-label">/ ' + IXL_GOAL + ' min</span>'
+        + '<button class="btn-save" style="background:' + k.color + '" onclick="saveIxl(' + idx + ')">Save</button>'
+        + '</div>'
+        + segBar())
+    + '</div>'
+    + (done ? '<span class="done-badge">&#10003; Done</span>' : (skipped ? '' : '<span class="task-tag">💻 IXL</span>'))
+    + '</div>';
+}
+
+function saveIxl(idx) {
+  const v = Math.max(0, parseInt(document.getElementById('ixl_'+idx).value)||0);
+  state.books[state.active][idx].ixlMins = v;
+  persist(); render();
+}
+function toggleTask(idx) {
+  state.books[state.active][idx].done = !state.books[state.active][idx].done;
+  persist(); render();
+}
+
+function addBook() {
+  const title = document.getElementById('iTitle').value.trim();
+  if (!title) { document.getElementById('iTitle').focus(); return; }
+  state.books[state.active].push({
+    id: 'u' + (uid++),
+    title,
+    author:     document.getElementById('iAuthor').value.trim(),
+    totalPages: parseInt(document.getElementById('iPages').value) || 0,
+    pagesRead:  0,
+    program:    document.getElementById('iProg').value,
+    required:   false,
+  });
+  persist(); render();
+}
+
+function savePg(idx, max) {
+  const v = Math.min(parseInt(document.getElementById('pg_'+idx).value)||0, max);
+  state.books[state.active][idx].pagesRead = v;
+  persist(); render();
+}
+
+function setTotal(idx) {
+  const v = parseInt(document.getElementById('tp_'+idx).value)||0;
+  if (v > 0) { state.books[state.active][idx].totalPages = v; persist(); render(); }
+}
+
+function rmBook(idx) {
+  if (!confirm('Remove this book?')) return;
+  state.books[state.active].splice(idx, 1);
+  persist(); render();
+}
+
+document.getElementById('kidTabs').addEventListener('click', e => {
+  const tab = e.target.closest('.kid-tab');
+  if (!tab) return;
+  document.querySelectorAll('.kid-tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  state.active = tab.dataset.kid;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
